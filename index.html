@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>M2 Work Platform</title>
+
+<style>
+body{
+    margin:0;
+    min-height:100vh;
+    background:#111827;
+    color:white;
+    font-family:Arial,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:90%;
+    max-width:400px;
+    text-align:center;
+}
+
+.logo{
+    font-size:60px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.box{
+    background:#1f2937;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+input,button{
+    width:90%;
+    padding:14px;
+    margin:10px;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+
+input:focus{
+    outline:2px solid #2563eb;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+}
+
+button:hover{
+    opacity:0.85;
+}
+
+#langBtn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:auto;
+}
+
+#register{
+    cursor:pointer;
+    margin-top:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<button id="langBtn">English</button>
+
+<div class="container">
+
+<div class="logo">M2</div>
+
+<h1 id="title">منصة M2 للعمل</h1>
+
+<div class="box">
+
+<input id="email" placeholder="البريد الإلكتروني">
+
+<input id="password" placeholder="كلمة المرور">
+
+<input id="invite" placeholder="كود الدعوة">
+
+<button id="login">تسجيل الدخول</button>
+
+<p id="register">ليس لديك حساب؟ إنشاء حساب</p>
+
+</div>
+
+</div>
+
+<script>
+
+let arabic=true;
+
+langBtn.onclick=function(){
+
+if(arabic){
+
+title.innerHTML="M2 Work Platform";
+email.placeholder="Email";
+password.placeholder="Password";
+invite.placeholder="Invitation Code";
+login.innerHTML="Login";
+register.innerHTML="Register";
+langBtn.innerHTML="العربية";
+
+arabic=false;
+
+}else{
+
+title.innerHTML="منصة M2 للعمل";
+email.placeholder="البريد الإلكتروني";
+password.placeholder="كلمة المرور";
+invite.placeholder="كود الدعوة";
+login.innerHTML="تسجيل الدخول";
+register.innerHTML="ليس لديك حساب؟ إنشاء حساب";
+langBtn.innerHTML="English";
+
+arabic=true;
+
+}
+
+};
+
+</script>
+
+</body>
+</html>
