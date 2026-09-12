@@ -1,2 +1,608 @@
 # M2-Work-Platform..-
 index.html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M2 Work Platform</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:#111827;
+    color:white;
+    font-family:Arial,sans-serif;
+}
+
+button,input{
+    font-family:inherit;
+}
+
+.container{
+    width:90%;
+    max-width:420px;
+    margin:auto;
+    padding-top:60px;
+    text-align:center;
+}
+
+.logo{
+    font-size:60px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.box{
+    background:#1f2937;
+    padding:25px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+
+input,button{
+    width:90%;
+    padding:14px;
+    margin:8px;
+    border-radius:10px;
+    border:none;
+    font-size:16px;
+}
+
+input{
+    background:white;
+    color:#111827;
+}
+
+button{
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.85;
+}
+
+#langBtn{
+    position:absolute;
+    top:15px;
+    right:15px;
+    width:auto;
+}
+
+.link{
+    cursor:pointer;
+    color:#60a5fa;
+    margin-top:15px;
+}
+
+.hidden{
+    display:none;
+}
+
+/* الصفحة الرئيسية */
+
+#home{
+    min-height:100vh;
+    padding-bottom:80px;
+}
+
+.header{
+    background:#1f2937;
+    padding:20px;
+    text-align:center;
+}
+
+.header h1{
+    margin:5px;
+}
+
+.content{
+    width:92%;
+    max-width:700px;
+    margin:25px auto;
+}
+
+.card{
+    background:#1f2937;
+    padding:22px;
+    border-radius:18px;
+    margin-bottom:15px;
+}
+
+.card h2{
+    margin-top:0;
+}
+
+.balance{
+    font-size:35px;
+    font-weight:bold;
+    color:#60a5fa;
+}
+
+.nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    background:#1f2937;
+    display:flex;
+    justify-content:space-around;
+    padding:10px 5px;
+}
+
+.nav button{
+    width:auto;
+    margin:0;
+    padding:10px;
+    background:transparent;
+    font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<button id="langBtn">English</button>
+
+<!-- تسجيل الدخول -->
+
+<div id="loginPage" class="container">
+
+    <div class="logo">M2</div>
+
+    <h1 id="title">منصة M2 للعمل</h1>
+
+    <div class="box">
+
+        <input id="loginEmail"
+               type="email"
+               placeholder="البريد الإلكتروني">
+
+        <input id="loginPassword"
+               type="password"
+               placeholder="كلمة المرور">
+
+        <button onclick="login()" id="loginBtn">
+            تسجيل الدخول
+        </button>
+
+        <p class="link" onclick="showRegister()" id="registerLink">
+            ليس لديك حساب؟ إنشاء حساب
+        </p>
+
+    </div>
+</div>
+
+
+<!-- إنشاء حساب -->
+
+<div id="registerPage" class="container hidden">
+
+    <div class="logo">M2</div>
+
+    <h1 id="registerTitle">إنشاء حساب</h1>
+
+    <div class="box">
+
+        <input id="name"
+               type="text"
+               placeholder="اسم المستخدم">
+
+        <input id="registerEmail"
+               type="email"
+               placeholder="البريد الإلكتروني">
+
+        <input id="registerPassword"
+               type="password"
+               placeholder="كلمة المرور">
+
+        <input id="invite"
+               type="text"
+               placeholder="كود الدعوة">
+
+        <button onclick="register()" id="registerBtn">
+            إنشاء الحساب
+        </button>
+
+        <p class="link"
+           onclick="showLogin()"
+           id="backLogin">
+            لدي حساب بالفعل
+        </p>
+
+    </div>
+</div>
+
+
+<!-- الصفحة الرئيسية -->
+
+<div id="home" class="hidden">
+
+    <div class="header">
+        <h1>M2 Work Platform</h1>
+        <p id="welcome">
+            مرحباً بك
+        </p>
+    </div>
+
+    <div class="content">
+
+        <div id="homeSection">
+
+            <div class="card">
+                <h2>🏠 الرئيسية</h2>
+                <p>مرحباً بك في منصة M2 للعمل.</p>
+            </div>
+
+            <div class="card">
+                <h2>💰 الرصيد</h2>
+                <div class="balance">$0.00</div>
+            </div>
+
+            <div class="card">
+                <h2>💼 الأعمال</h2>
+                <p>لا توجد أعمال متاحة حالياً.</p>
+            </div>
+
+        </div>
+
+
+        <div id="profileSection" class="card hidden">
+            <h2>👤 الملف الشخصي</h2>
+            <p id="profileName"></p>
+            <p id="profileEmail"></p>
+        </div>
+
+
+        <div id="jobsSection" class="card hidden">
+            <h2>💼 الأعمال</h2>
+            <p>سيتم إضافة الأعمال هنا.</p>
+        </div>
+
+
+        <div id="balanceSection" class="card hidden">
+            <h2>💰 الرصيد</h2>
+            <div class="balance">$0.00</div>
+            <p>الرصيد الحالي.</p>
+        </div>
+
+    </div>
+
+
+    <div class="nav">
+
+        <button onclick="showSection('home')">
+            🏠 الرئيسية
+        </button>
+
+        <button onclick="showSection('profile')">
+            👤 الملف الشخصي
+        </button>
+
+        <button onclick="showSection('jobs')">
+            💼 الأعمال
+        </button>
+
+        <button onclick="showSection('balance')">
+            💰 الرصيد
+        </button>
+
+        <button onclick="logout()">
+            🚪 خروج
+        </button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+let arabic = true;
+
+
+/* عرض التسجيل */
+
+function showRegister(){
+
+    document.getElementById("loginPage")
+        .classList.add("hidden");
+
+    document.getElementById("registerPage")
+        .classList.remove("hidden");
+}
+
+
+/* العودة للدخول */
+
+function showLogin(){
+
+    document.getElementById("registerPage")
+        .classList.add("hidden");
+
+    document.getElementById("loginPage")
+        .classList.remove("hidden");
+}
+
+
+/* التسجيل */
+
+function register(){
+
+    let name =
+        document.getElementById("name").value.trim();
+
+    let email =
+        document.getElementById("registerEmail").value.trim();
+
+    let password =
+        document.getElementById("registerPassword").value;
+
+    if(!name || !email || !password){
+
+        alert(
+            arabic
+            ? "يرجى إدخال جميع البيانات"
+            : "Please fill in all fields"
+        );
+
+        return;
+    }
+
+    /*
+      مؤقتاً نحفظ البيانات في المتصفح.
+      في الخطوة التالية سنستبدل هذا
+      بقاعدة بيانات حقيقية وآمنة.
+    */
+
+    localStorage.setItem(
+        "m2_user",
+        JSON.stringify({
+            name:name,
+            email:email,
+            password:password
+        })
+    );
+
+    alert(
+        arabic
+        ? "تم إنشاء الحساب"
+        : "Account created"
+    );
+
+    showLogin();
+}
+
+
+/* تسجيل الدخول */
+
+function login(){
+
+    let email =
+        document.getElementById("loginEmail").value.trim();
+
+    let password =
+        document.getElementById("loginPassword").value;
+
+    let saved =
+        localStorage.getItem("m2_user");
+
+    if(!saved){
+
+        alert(
+            arabic
+            ? "لا يوجد حساب. أنشئ حساباً أولاً."
+            : "No account found. Please register first."
+        );
+
+        return;
+    }
+
+    let user = JSON.parse(saved);
+
+    if(
+        email === user.email &&
+        password === user.password
+    ){
+
+        localStorage.setItem(
+            "m2_logged",
+            "true"
+        );
+
+        openHome(user);
+
+    }else{
+
+        alert(
+            arabic
+            ? "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+            : "Incorrect email or password"
+        );
+    }
+}
+
+
+/* فتح الصفحة الرئيسية */
+
+function openHome(user){
+
+    document.getElementById("loginPage")
+        .classList.add("hidden");
+
+    document.getElementById("registerPage")
+        .classList.add("hidden");
+
+    document.getElementById("home")
+        .classList.remove("hidden");
+
+    document.getElementById("welcome")
+        .innerHTML =
+        arabic
+        ? "مرحباً بك، " + user.name
+        : "Welcome, " + user.name;
+
+    document.getElementById("profileName")
+        .innerHTML =
+        "👤 " + user.name;
+
+    document.getElementById("profileEmail")
+        .innerHTML =
+        "📧 " + user.email;
+}
+
+
+/* الأقسام */
+
+function showSection(section){
+
+    document.getElementById("homeSection")
+        .classList.add("hidden");
+
+    document.getElementById("profileSection")
+        .classList.add("hidden");
+
+    document.getElementById("jobsSection")
+        .classList.add("hidden");
+
+    document.getElementById("balanceSection")
+        .classList.add("hidden");
+
+    if(section === "home")
+        document.getElementById("homeSection")
+            .classList.remove("hidden");
+
+    if(section === "profile")
+        document.getElementById("profileSection")
+            .classList.remove("hidden");
+
+    if(section === "jobs")
+        document.getElementById("jobsSection")
+            .classList.remove("hidden");
+
+    if(section === "balance")
+        document.getElementById("balanceSection")
+            .classList.remove("hidden");
+}
+
+
+/* تسجيل الخروج */
+
+function logout(){
+
+    localStorage.removeItem("m2_logged");
+
+    document.getElementById("home")
+        .classList.add("hidden");
+
+    document.getElementById("loginPage")
+        .classList.remove("hidden");
+}
+
+
+/* اللغة */
+
+document.getElementById("langBtn").onclick =
+function(){
+
+    arabic = !arabic;
+
+    if(!arabic){
+
+        document.documentElement.lang="en";
+        document.documentElement.dir="ltr";
+
+        document.getElementById("title")
+            .innerHTML="M2 Work Platform";
+
+        document.getElementById("loginEmail")
+            .placeholder="Email";
+
+        document.getElementById("loginPassword")
+            .placeholder="Password";
+
+        document.getElementById("loginBtn")
+            .innerHTML="Login";
+
+        document.getElementById("registerLink")
+            .innerHTML="Don't have an account? Register";
+
+        document.getElementById("registerTitle")
+            .innerHTML="Create Account";
+
+        document.getElementById("name")
+            .placeholder="Username";
+
+        document.getElementById("registerEmail")
+            .placeholder="Email";
+
+        document.getElementById("registerPassword")
+            .placeholder="Password";
+
+        document.getElementById("invite")
+            .placeholder="Invitation Code";
+
+        document.getElementById("registerBtn")
+            .innerHTML="Create Account";
+
+        document.getElementById("backLogin")
+            .innerHTML="I already have an account";
+
+        document.getElementById("langBtn")
+            .innerHTML="العربية";
+
+    }else{
+
+        document.documentElement.lang="ar";
+        document.documentElement.dir="rtl";
+
+        document.getElementById("title")
+            .innerHTML="منصة M2 للعمل";
+
+        document.getElementById("loginEmail")
+            .placeholder="البريد الإلكتروني";
+
+        document.getElementById("loginPassword")
+            .placeholder="كلمة المرور";
+
+        document.getElementById("loginBtn")
+            .innerHTML="تسجيل الدخول";
+
+        document.getElementById("registerLink")
+            .innerHTML="ليس لديك حساب؟ إنشاء حساب";
+
+        document.getElementById("registerTitle")
+            .innerHTML="إنشاء حساب";
+
+        document.getElementById("name")
+            .placeholder="اسم المستخدم";
+
+        document.getElementById("registerEmail")
+            .placeholder="البريد الإلكتروني";
+
+        document.getElementById("registerPassword")
+            .placeholder="كلمة المرور";
+
+        document.getElementById("invite")
+            .placeholder="كود الدعوة";
+
+        document.getElementById("registerBtn")
+            .innerHTML="إنشاء الحساب";
+
+        document.getElementById("backLogin")
+            .innerHTML="لدي حساب بالفعل";
+
+        document.getElementById("langBtn")
+            .innerHTML="English";
+    }
+};
+
+</script>
+
+</body>
+</html>
