@@ -2,65 +2,74 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>M2 Work Platform</title>
+
 <style>
 *{box-sizing:border-box}
 body{
 margin:0;
 min-height:100vh;
-background:#111827;
-color:#fff;
+padding:20px;
 font-family:Arial,sans-serif;
+background:#111827;
+color:white;
 display:flex;
 justify-content:center;
-align-items:center;
-padding:20px
+align-items:center
 }
 .box{
 width:100%;
-max-width:500px;
-text-align:center
-}
-h1{
-color:#38bdf8;
-margin-bottom:10px
-}
-p{
-color:#cbd5e1
-}
-.card{
+max-width:420px;
 background:#1f2937;
-padding:25px;
-border-radius:15px;
-margin-top:20px;
-box-shadow:0 10px 30px #0005
+padding:28px 20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 35px #0008
 }
+.logo{
+width:70px;
+height:70px;
+margin:auto;
+border-radius:18px;
+background:#2563eb;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+font-weight:bold
+}
+h1{margin:18px 0 8px}
+p{color:#cbd5e1}
 input,button{
 width:100%;
 padding:14px;
-margin:8px 0;
+margin:7px 0;
 border:0;
 border-radius:10px;
 font-size:16px
 }
-input{
-background:#374151;
-color:white
-}
 button{
-background:#0284c7;
+background:#2563eb;
 color:white;
-font-weight:bold;
+font-weight:bold
+}
+.lang{background:#374151}
+.register{
+color:#60a5fa;
+margin:16px 0;
 cursor:pointer
 }
-button:hover{
-background:#0369a1
+.features{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+margin-top:15px
 }
-#result{
-display:none;
-margin-top:15px;
-color:#4ade80
+.feature{
+background:#374151;
+padding:14px;
+border-radius:12px
 }
 </style>
 </head>
@@ -69,43 +78,42 @@ color:#4ade80
 
 <div class="box">
 
-<h1>🚀 M2 Work Platform</h1>
-<p>منصة العمل الخاصة بك</p>
+<button class="lang" id="lang">English</button>
 
-<div class="card">
+<div class="logo">M2</div>
 
-<h2>ابدأ الآن</h2>
+<h1 id="title">منصة M2 للعمل</h1>
 
-<input id="name" type="text" placeholder="اكتب اسمك">
+<p id="desc">منصة للعمل وإدارة الحساب والطلبات</p>
 
-<input id="work" type="text" placeholder="ما هو عملك؟">
+<input id="email" type="email" placeholder="البريد الإلكتروني">
 
-<button onclick="startWork()">ابدأ</button>
+<input id="password" type="password" placeholder="كلمة المرور">
 
-<div id="result"></div>
+<input id="invite" type="text" placeholder="كود الدعوة">
 
+<button id="login">تسجيل الدخول</button>
+
+<div class="register" id="register">
+ليس لديك حساب؟ إنشاء حساب
+</div>
+
+<div class="features">
+<div class="feature">💼 وظائف</div>
+<div class="feature">💰 إيداع وسحب</div>
+<div class="feature">👤 حساب المستخدم</div>
+<div class="feature">🛡️ موافقة الإدارة</div>
 </div>
 
 </div>
 
 <script>
-function startWork(){
-let name=document.getElementById("name").value.trim();
-let work=document.getElementById("work").value.trim();
-let result=document.getElementById("result");
+let ar=true;
 
-if(!name||!work){
-result.style.display="block";
-result.style.color="#f87171";
-result.textContent="⚠️ اكتب الاسم والعمل أولاً";
-return;
-}
+document.getElementById("lang").onclick=function(){
+ar=!ar;
 
-result.style.display="block";
-result.style.color="#4ade80";
-result.textContent="✅ أهلاً "+name+"! تم بدء العمل: "+work;
-}
-</script>
+document.documentElement.lang=ar?"ar":"en";
+document.documentElement.dir=ar?"rtl":"ltr";
 
-</body>
-</html>
+document.getElementById("lang").textContent=ar?"English":"العربية
