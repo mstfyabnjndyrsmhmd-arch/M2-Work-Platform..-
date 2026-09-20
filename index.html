@@ -7,6 +7,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
 margin:0;
 min-height:100vh;
@@ -18,6 +19,7 @@ display:flex;
 justify-content:center;
 align-items:center
 }
+
 .box{
 width:100%;
 max-width:420px;
@@ -27,6 +29,7 @@ border-radius:20px;
 text-align:center;
 box-shadow:0 10px 35px #0008
 }
+
 .logo{
 width:70px;
 height:70px;
@@ -39,8 +42,10 @@ justify-content:center;
 font-size:30px;
 font-weight:bold
 }
+
 h1{margin:18px 0 8px}
 p{color:#cbd5e1}
+
 input,button{
 width:100%;
 padding:14px;
@@ -49,23 +54,29 @@ border:0;
 border-radius:10px;
 font-size:16px
 }
+
 button{
 background:#2563eb;
 color:white;
-font-weight:bold
+font-weight:bold;
+cursor:pointer
 }
+
 .lang{background:#374151}
+
 .register{
 color:#60a5fa;
 margin:16px 0;
 cursor:pointer
 }
+
 .features{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:10px;
 margin-top:15px
 }
+
 .feature{
 background:#374151;
 padding:14px;
@@ -99,21 +110,4 @@ border-radius:12px
 </div>
 
 <div class="features">
-<div class="feature">💼 وظائف</div>
-<div class="feature">💰 إيداع وسحب</div>
-<div class="feature">👤 حساب المستخدم</div>
-<div class="feature">🛡️ موافقة الإدارة</div>
-</div>
-
-</div>
-
-<script>
-let ar=true;
-
-document.getElementById("lang").onclick=function(){
-ar=!ar;
-
-document.documentElement.lang=ar?"ar":"en";
-document.documentElement.dir=ar?"rtl":"ltr";
-
-document.getElementById("lang").textContent=ar?"English":"العربية
+<div class="feature">💼 وظائف</div
