@@ -110,20 +110,38 @@ border-radius:12px
 </div>
 
 <div class="features">
-
 <div class="feature">💼 وظائف</div>
-
 <div class="feature">💰 إيداع وسحب</div>
-
 <div class="feature">👤 حساب المستخدم</div>
-
 <div class="feature">🛡️ موافقة الإدارة</div>
-
 </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+
+// ===============================
+// Supabase
+// ===============================
+
+const SUPABASE_URL =
+"https://scjyudgdvlfzeewbnmyt.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+"https://scjyudgdvlfzeewbnmyt.supabase.co";
+
+const supabaseClient =
+supabase.createClient(
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
+);
+
+
+// ===============================
+// اللغة
+// ===============================
 
 let ar=true;
 
@@ -141,8 +159,9 @@ document.getElementById("title").textContent=
 ar?"منصة M2 للعمل":"M2 Work Platform";
 
 document.getElementById("desc").textContent=
-ar?"منصة للعمل وإدارة الحساب والطلبات":
-"Platform for work, account and requests";
+ar
+?"منصة للعمل وإدارة الحساب والطلبات"
+:"Platform for work, account and requests";
 
 document.getElementById("email").placeholder=
 ar?"البريد الإلكتروني":"Email";
@@ -157,15 +176,25 @@ document.getElementById("login").textContent=
 ar?"تسجيل الدخول":"Login";
 
 document.getElementById("register").textContent=
-ar?"ليس لديك حساب؟ إنشاء حساب":
-"Don't have an account? Register";
+ar
+?"ليس لديك حساب؟ إنشاء حساب"
+:"Don't have an account? Register";
 
 };
 
-document.getElementById("login").onclick=function(){
 
-const email=document.getElementById("email").value;
-const password=document.getElementById("password").value;
+// ===============================
+// تسجيل الدخول
+// ===============================
+
+document.getElementById("login").onclick =
+async function(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
 
 if(!email || !password){
 
@@ -178,10 +207,88 @@ ar
 return;
 }
 
+const { data, error } =
+await supabaseClient.auth.signInWithPassword({
+email: email,
+password: password
+});
+
+if(error){
+
 alert(
 ar
-?"سيتم ربط تسجيل الدخول مع Supabase في الخطوة التالية"
-:"Supabase login will be connected in the next step"
+?"خطأ: "+error.message
+:"Error: "+error.message
+);
+
+return;
+}
+
+alert(
+ar
+?"تم تسجيل الدخول بنجاح"
+:"Login successful"
+);
+
+};
+
+
+// ===============================
+// إنشاء حساب
+// ===============================
+
+document.getElementById("register").onclick =
+async function(){
+
+const email =
+document.getElementById("email").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+if(!email || !password){
+
+alert(
+ar
+?"أدخل البريد الإلكتروني وكلمة المرور أولاً"
+:"Enter email and password first"
+);
+
+return;
+}
+
+if(password.length < 6){
+
+alert(
+ar
+?"كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+:"Password must be at least 6 characters"
+);
+
+return;
+}
+
+const { data, error } =
+await supabaseClient.auth.signUp({
+email: email,
+password: password
+});
+
+if(error){
+
+alert(
+ar
+?"خطأ: "+error.message
+:"Error: "+error.message
+);
+
+return;
+}
+
+alert(
+ar
+?"تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طلب Supabase ذلك."
+:"Account created. Check your email if Supabase asks you to."
 );
 
 };
