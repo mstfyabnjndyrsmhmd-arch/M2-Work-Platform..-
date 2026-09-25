@@ -8,114 +8,117 @@
 
 <style>
 *{
-box-sizing:border-box;
+  box-sizing:border-box;
 }
 
 body{
-margin:0;
-min-height:100vh;
-padding:20px;
-font-family:Arial,sans-serif;
-background:#111827;
-color:white;
-display:flex;
-justify-content:center;
-align-items:center;
+  margin:0;
+  min-height:100vh;
+  padding:20px;
+  font-family:Arial,sans-serif;
+  background:#111827;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 .box{
-width:100%;
-max-width:420px;
-background:#1f2937;
-padding:28px 20px;
-border-radius:20px;
-text-align:center;
-box-shadow:0 10px 35px #0008;
+  width:100%;
+  max-width:420px;
+  background:#1f2937;
+  padding:28px 20px;
+  border-radius:20px;
+  text-align:center;
+  box-shadow:0 10px 35px #0008;
 }
 
 .logo{
-width:70px;
-height:70px;
-margin:auto;
-border-radius:18px;
-background:#2563eb;
-display:flex;
-align-items:center;
-justify-content:center;
-font-size:30px;
-font-weight:bold;
+  width:70px;
+  height:70px;
+  margin:auto;
+  border-radius:18px;
+  background:#2563eb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:30px;
+  font-weight:bold;
 }
 
 h1{
-margin:18px 0 8px;
+  margin:18px 0 8px;
 }
 
 p{
-color:#cbd5e1;
+  color:#cbd5e1;
 }
 
 input,
 button{
-width:100%;
-padding:14px;
-margin:7px 0;
-border:0;
-border-radius:10px;
-font-size:16px;
+  width:100%;
+  padding:14px;
+  margin:7px 0;
+  border:0;
+  border-radius:10px;
+  font-size:16px;
 }
 
 input{
-background:white;
-color:#111827;
+  background:white;
+  color:#111827;
 }
 
 button{
-background:#2563eb;
-color:white;
-font-weight:bold;
-cursor:pointer;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .lang{
-background:#374151;
+  background:#374151;
 }
 
 .register{
-color:#60a5fa;
-margin:16px 0;
-cursor:pointer;
+  color:#60a5fa;
+  margin:16px 0;
+  cursor:pointer;
 }
 
 .message{
-margin-top:12px;
-font-size:14px;
-color:#fbbf24;
+  margin-top:12px;
+  font-size:14px;
+  color:#fbbf24;
+  line-height:1.6;
 }
 
 .hidden{
-display:none;
+  display:none;
 }
 
 .task{
-background:#374151;
-padding:15px;
-margin-top:12px;
-border-radius:12px;
-text-align:right;
+  background:#374151;
+  padding:15px;
+  margin-top:12px;
+  border-radius:12px;
+  text-align:right;
 }
 
 .task h3{
-margin-top:0;
+  margin-top:0;
 }
 
 .logout{
-background:#dc2626;
-margin-top:20px;
+  background:#dc2626;
+  margin-top:20px;
 }
 </style>
 </head>
 
 <body>
+
+<!-- LOGIN -->
 
 <div class="box" id="loginPage">
 
@@ -133,15 +136,19 @@ margin-top:20px;
 id="email"
 type="email"
 placeholder="البريد الإلكتروني"
+autocomplete="email"
 >
 
 <input
 id="password"
 type="password"
 placeholder="كلمة المرور"
+autocomplete="current-password"
 >
 
-<button id="login">تسجيل الدخول</button>
+<button id="login">
+تسجيل الدخول
+</button>
 
 <div class="register" id="register">
 ليس لديك حساب؟ إنشاء حساب
@@ -152,15 +159,21 @@ placeholder="كلمة المرور"
 </div>
 
 
+<!-- DASHBOARD -->
+
 <div class="box hidden" id="dashboard">
 
 <div class="logo">M2</div>
 
-<h1>لوحة المستخدم</h1>
+<h1 id="dashboardTitle">
+لوحة المستخدم
+</h1>
 
 <p id="welcome"></p>
 
-<h2>📋 مهامي</h2>
+<h2 id="tasksTitle">
+📋 مهامي
+</h2>
 
 <div id="tasks">
 جاري تحميل المهام...
@@ -183,10 +196,14 @@ const SUPABASE_URL =
 const SUPABASE_PUBLISHABLE_KEY =
 "sb_publishable_yEWBEwKdcm1FtKWziyPZ2A_uE4NvV3J";
 
+const M2_SITE_URL =
+"https://mstfyabnjndyrsmhmd-arch.github.io/M2-Work-Platform..-/";
+
+
 const supabaseClient =
 supabase.createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
 );
 
 
@@ -232,253 +249,379 @@ document.getElementById("tasks");
 const logout =
 document.getElementById("logout");
 
+const dashboardTitle =
+document.getElementById("dashboardTitle");
+
+const tasksTitle =
+document.getElementById("tasksTitle");
+
 
 function showMessage(text){
-message.textContent = text;
+  message.textContent = text;
 }
 
 
 async function loadDashboard(){
 
-loginPage.classList.add("hidden");
-dashboard.classList.remove("hidden");
+  loginPage.classList.add("hidden");
+  dashboard.classList.remove("hidden");
 
-const {
-data: { user }
-} = await supabaseClient.auth.getUser();
+  const {
+    data: { user }
+  } = await supabaseClient.auth.getUser();
 
-if(!user){
-return;
-}
+  if(!user){
+    return;
+  }
 
-welcome.textContent =
-"مرحبًا بك، " + user.email;
+  welcome.textContent =
+    (ar ? "مرحبًا بك، " : "Welcome, ") + user.email;
 
-const { data, error } =
-await supabaseClient
-.from("tasks")
-.select("*")
-.eq("assigned_to", user.id)
-.order("created_at", { ascending:false });
+  tasks.innerHTML =
+    ar ? "جاري تحميل المهام..." : "Loading tasks...";
 
-if(error){
 
-tasks.innerHTML =
-"حدث خطأ في تحميل المهام: " + error.message;
+  const { data, error } =
+    await supabaseClient
+      .from("tasks")
+      .select("*")
+      .eq("assigned_to", user.id)
+      .order("created_at", {
+        ascending:false
+      });
 
-return;
-}
 
-if(!data || data.length === 0){
+  if(error){
 
-tasks.innerHTML =
-"لا توجد مهام مخصصة لك حاليًا.";
+    tasks.innerHTML =
+      (ar ? "حدث خطأ: " : "Error: ")
+      + error.message;
 
-return;
-}
+    return;
+  }
 
-tasks.innerHTML = "";
 
-data.forEach(task => {
+  if(!data || data.length === 0){
 
-const div =
-document.createElement("div");
+    tasks.innerHTML =
+      ar
+      ? "لا توجد مهام مخصصة لك حاليًا."
+      : "No tasks assigned to you.";
 
-div.className = "task";
+    return;
+  }
 
-div.innerHTML = `
-<h3>${task.title}</h3>
-<p>${task.description || ""}</p>
-<p>💰 المكافأة: ${task.reward}</p>
-<p>الحالة: ${task.status}</p>
-`;
 
-tasks.appendChild(div);
+  tasks.innerHTML = "";
 
-});
+
+  data.forEach(task => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "task";
+
+
+    const h3 =
+      document.createElement("h3");
+
+    h3.textContent =
+      task.title || "";
+
+
+    const description =
+      document.createElement("p");
+
+    description.textContent =
+      task.description || "";
+
+
+    const reward =
+      document.createElement("p");
+
+    reward.textContent =
+      ar
+      ? "💰 المكافأة: " + task.reward
+      : "💰 Reward: " + task.reward;
+
+
+    const status =
+      document.createElement("p");
+
+    status.textContent =
+      ar
+      ? "الحالة: " + task.status
+      : "Status: " + task.status;
+
+
+    div.appendChild(h3);
+    div.appendChild(description);
+    div.appendChild(reward);
+    div.appendChild(status);
+
+    tasks.appendChild(div);
+
+  });
 
 }
 
 
 login.onclick = async function(){
 
-showMessage("");
+  showMessage("");
 
-const userEmail =
-email.value.trim();
+  const userEmail =
+    email.value.trim();
 
-const userPassword =
-password.value;
-
-if(!userEmail || !userPassword){
-
-showMessage(
-ar
-? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-: "Please enter email and password"
-);
-
-return;
-}
-
-const { error } =
-await supabaseClient.auth.signInWithPassword({
-
-email:userEmail,
-
-password:userPassword
-
-});
+  const userPassword =
+    password.value;
 
 
-if(error){
+  if(!userEmail || !userPassword){
 
-showMessage(
-(ar ? "خطأ: " : "Error: ")
-+ error.message
-);
+    showMessage(
+      ar
+      ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
+      : "Please enter email and password"
+    );
 
-return;
-}
+    return;
+  }
 
-await loadDashboard();
+
+  const { error } =
+    await supabaseClient.auth.signInWithPassword({
+
+      email:userEmail,
+
+      password:userPassword
+
+    });
+
+
+  if(error){
+
+    showMessage(
+      (ar ? "خطأ: " : "Error: ")
+      + error.message
+    );
+
+    return;
+  }
+
+
+  await loadDashboard();
 
 };
 
 
 register.onclick = async function(){
 
-showMessage("");
+  showMessage("");
 
-const userEmail =
-email.value.trim();
+  const userEmail =
+    email.value.trim();
 
-const userPassword =
-password.value;
-
-if(!userEmail || !userPassword){
-
-showMessage(
-ar
-? "أدخل البريد الإلكتروني وكلمة المرور أولاً"
-: "Enter email and password first"
-);
-
-return;
-}
-
-if(userPassword.length < 6){
-
-showMessage(
-ar
-? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
-: "Password must be at least 6 characters"
-);
-
-return;
-}
-
-const { error } =
-await supabaseClient.auth.signUp({
-
-email:userEmail,
-
-password:userPassword
-
-});
+  const userPassword =
+    password.value;
 
 
-if(error){
+  if(!userEmail || !userPassword){
 
-showMessage(
-(ar ? "خطأ: " : "Error: ")
-+ error.message
-);
+    showMessage(
+      ar
+      ? "أدخل البريد الإلكتروني وكلمة المرور أولاً"
+      : "Enter email and password first"
+    );
 
-return;
-}
+    return;
+  }
 
-showMessage(
-ar
-? "تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طلب Supabase ذلك."
-: "Account created. Check your email if Supabase asks you to."
-);
+
+  if(userPassword.length < 6){
+
+    showMessage(
+      ar
+      ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+      : "Password must be at least 6 characters"
+    );
+
+    return;
+  }
+
+
+  showMessage(
+    ar
+    ? "جاري إنشاء الحساب..."
+    : "Creating account..."
+  );
+
+
+  const { data, error } =
+    await supabaseClient.auth.signUp({
+
+      email:userEmail,
+
+      password:userPassword,
+
+      options:{
+        emailRedirectTo:M2_SITE_URL
+      }
+
+    });
+
+
+  if(error){
+
+    showMessage(
+      (ar ? "خطأ: " : "Error: ")
+      + error.message
+    );
+
+    return;
+  }
+
+
+  if(data && data.session){
+
+    showMessage(
+      ar
+      ? "تم إنشاء الحساب وتسجيل الدخول."
+      : "Account created and signed in."
+    );
+
+    await loadDashboard();
+
+    return;
+  }
+
+
+  showMessage(
+    ar
+    ? "تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط تأكيد الحساب، ثم ارجع إلى موقع M2 وسجّل الدخول."
+    : "Account created. Open your email, confirm your account, then return to M2 and log in."
+  );
 
 };
 
 
 lang.onclick = function(){
 
-ar = !ar;
+  ar = !ar;
 
-document.documentElement.lang =
-ar ? "ar" : "en";
 
-document.documentElement.dir =
-ar ? "rtl" : "ltr";
+  document.documentElement.lang =
+    ar ? "ar" : "en";
 
-lang.textContent =
-ar ? "English" : "العربية";
 
-title.textContent =
-ar
-? "منصة M2 للعمل"
-: "M2 Work Platform";
+  document.documentElement.dir =
+    ar ? "rtl" : "ltr";
 
-desc.textContent =
-ar
-? "منصة للعمل وإدارة الحساب والطلبات"
-: "Platform for work, account and requests";
 
-email.placeholder =
-ar
-? "البريد الإلكتروني"
-: "Email";
+  lang.textContent =
+    ar ? "English" : "العربية";
 
-password.placeholder =
-ar
-? "كلمة المرور"
-: "Password";
 
-login.textContent =
-ar
-? "تسجيل الدخول"
-: "Login";
+  title.textContent =
+    ar
+    ? "منصة M2 للعمل"
+    : "M2 Work Platform";
 
-register.textContent =
-ar
-? "ليس لديك حساب؟ إنشاء حساب"
-: "Don't have an account? Register";
+
+  desc.textContent =
+    ar
+    ? "منصة للعمل وإدارة الحساب والطلبات"
+    : "Platform for work, account and requests";
+
+
+  email.placeholder =
+    ar
+    ? "البريد الإلكتروني"
+    : "Email";
+
+
+  password.placeholder =
+    ar
+    ? "كلمة المرور"
+    : "Password";
+
+
+  login.textContent =
+    ar
+    ? "تسجيل الدخول"
+    : "Login";
+
+
+  register.textContent =
+    ar
+    ? "ليس لديك حساب؟ إنشاء حساب"
+    : "Don't have an account? Register";
+
+
+  dashboardTitle.textContent =
+    ar
+    ? "لوحة المستخدم"
+    : "User Dashboard";
+
+
+  tasksTitle.textContent =
+    ar
+    ? "📋 مهامي"
+    : "📋 My Tasks";
+
+
+  logout.textContent =
+    ar
+    ? "تسجيل الخروج"
+    : "Logout";
 
 };
 
 
 logout.onclick = async function(){
 
-await supabaseClient.auth.signOut();
+  await supabaseClient.auth.signOut();
 
-dashboard.classList.add("hidden");
-loginPage.classList.remove("hidden");
+  dashboard.classList.add("hidden");
 
-email.value = "";
-password.value = "";
+  loginPage.classList.remove("hidden");
 
-showMessage("");
+  email.value = "";
+
+  password.value = "";
+
+  showMessage("");
 
 };
 
 
+supabaseClient.auth.onAuthStateChange(
+  async function(event, session){
+
+    if(session){
+
+      await loadDashboard();
+
+    }
+
+  }
+);
+
+
 (async function(){
 
-const {
-data: { session }
-} = await supabaseClient.auth.getSession();
+  const {
+    data: { session }
+  } =
+    await supabaseClient.auth.getSession();
 
-if(session){
 
-await loadDashboard();
+  if(session){
 
-}
+    await loadDashboard();
+
+  }
 
 })();
 
