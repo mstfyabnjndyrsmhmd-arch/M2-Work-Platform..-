@@ -73,17 +73,19 @@ button{
   background:#2563eb;
   color:white;
   font-weight:bold;
-  cursor:pointer;
 }
 
 .lang{
   background:#374151;
 }
 
-.register{
+.registerBtn{
+  background:#374151;
   color:#60a5fa;
-  margin:16px 0;
-  cursor:pointer;
+}
+
+.backBtn{
+  background:#374151;
 }
 
 .message{
@@ -118,60 +120,112 @@ button{
 
 <body>
 
-<!-- LOGIN -->
+<!-- صفحة تسجيل الدخول -->
 
 <div class="box" id="loginPage">
 
-<button class="lang" id="lang">English</button>
+<button class="lang" id="lang">
+English
+</button>
 
 <div class="logo">M2</div>
 
-<h1 id="title">منصة M2 للعمل</h1>
+<h1 id="loginTitle">
+منصة M2 للعمل
+</h1>
 
-<p id="desc">
+<p id="loginDesc">
 منصة للعمل وإدارة الحساب والطلبات
 </p>
 
 <input
-id="email"
+id="loginEmail"
 type="email"
 placeholder="البريد الإلكتروني"
 autocomplete="email"
 >
 
 <input
-id="password"
+id="loginPassword"
 type="password"
 placeholder="كلمة المرور"
 autocomplete="current-password"
 >
 
-<button id="login">
+<button id="loginBtn">
 تسجيل الدخول
 </button>
 
-<div class="register" id="register">
-ليس لديك حساب؟ إنشاء حساب
+<button class="registerBtn" id="openRegister">
+إنشاء حساب جديد
+</button>
+
+<div class="message" id="loginMessage"></div>
+
 </div>
 
-<div class="message" id="message"></div>
+
+<!-- صفحة إنشاء الحساب -->
+
+<div class="box hidden" id="registerPage">
+
+<div class="logo">M2</div>
+
+<h1 id="registerTitle">
+إنشاء حساب جديد
+</h1>
+
+<p id="registerDesc">
+أنشئ حسابك في منصة M2
+</p>
+
+<input
+id="registerEmail"
+type="email"
+placeholder="البريد الإلكتروني"
+autocomplete="email"
+>
+
+<input
+id="registerPassword"
+type="password"
+placeholder="كلمة المرور"
+autocomplete="new-password"
+>
+
+<input
+id="registerPassword2"
+type="password"
+placeholder="تأكيد كلمة المرور"
+autocomplete="new-password"
+>
+
+<button id="createAccountBtn">
+إنشاء الحساب
+</button>
+
+<button class="backBtn" id="backLogin">
+العودة لتسجيل الدخول
+</button>
+
+<div class="message" id="registerMessage"></div>
 
 </div>
 
 
-<!-- DASHBOARD -->
+<!-- لوحة المستخدم -->
 
 <div class="box hidden" id="dashboard">
 
 <div class="logo">M2</div>
 
-<h1 id="dashboardTitle">
+<h1>
 لوحة المستخدم
 </h1>
 
 <p id="welcome"></p>
 
-<h2 id="tasksTitle">
+<h2>
 📋 مهامي
 </h2>
 
@@ -202,43 +256,66 @@ const M2_SITE_URL =
 
 const supabaseClient =
 supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_PUBLISHABLE_KEY
+SUPABASE_URL,
+SUPABASE_PUBLISHABLE_KEY
 );
 
 
 let ar = true;
 
 
+/* الصفحات */
+
 const loginPage =
 document.getElementById("loginPage");
+
+const registerPage =
+document.getElementById("registerPage");
 
 const dashboard =
 document.getElementById("dashboard");
 
-const lang =
-document.getElementById("lang");
 
-const title =
-document.getElementById("title");
+/* تسجيل الدخول */
 
-const desc =
-document.getElementById("desc");
+const loginEmail =
+document.getElementById("loginEmail");
 
-const email =
-document.getElementById("email");
+const loginPassword =
+document.getElementById("loginPassword");
 
-const password =
-document.getElementById("password");
+const loginBtn =
+document.getElementById("loginBtn");
 
-const login =
-document.getElementById("login");
+const openRegister =
+document.getElementById("openRegister");
 
-const register =
-document.getElementById("register");
+const loginMessage =
+document.getElementById("loginMessage");
 
-const message =
-document.getElementById("message");
+
+/* التسجيل */
+
+const registerEmail =
+document.getElementById("registerEmail");
+
+const registerPassword =
+document.getElementById("registerPassword");
+
+const registerPassword2 =
+document.getElementById("registerPassword2");
+
+const createAccountBtn =
+document.getElementById("createAccountBtn");
+
+const backLogin =
+document.getElementById("backLogin");
+
+const registerMessage =
+document.getElementById("registerMessage");
+
+
+/* لوحة المستخدم */
 
 const welcome =
 document.getElementById("welcome");
@@ -249,372 +326,506 @@ document.getElementById("tasks");
 const logout =
 document.getElementById("logout");
 
-const dashboardTitle =
-document.getElementById("dashboardTitle");
 
-const tasksTitle =
-document.getElementById("tasksTitle");
+/* اللغة */
+
+const lang =
+document.getElementById("lang");
+
+const loginTitle =
+document.getElementById("loginTitle");
+
+const loginDesc =
+document.getElementById("loginDesc");
+
+const registerTitle =
+document.getElementById("registerTitle");
+
+const registerDesc =
+document.getElementById("registerDesc");
 
 
-function showMessage(text){
-  message.textContent = text;
+/* فتح التسجيل */
+
+openRegister.onclick = function(){
+
+loginPage.classList.add("hidden");
+
+registerPage.classList.remove("hidden");
+
+loginMessage.textContent = "";
+
+};
+
+
+/* العودة */
+
+backLogin.onclick = function(){
+
+registerPage.classList.add("hidden");
+
+loginPage.classList.remove("hidden");
+
+registerMessage.textContent = "";
+
+};
+
+
+/* تسجيل الدخول */
+
+loginBtn.onclick = async function(){
+
+loginMessage.textContent = "";
+
+const email =
+loginEmail.value.trim();
+
+const password =
+loginPassword.value;
+
+
+if(!email || !password){
+
+loginMessage.textContent =
+ar
+? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
+: "Please enter email and password";
+
+return;
 }
 
+
+loginBtn.disabled = true;
+
+loginBtn.textContent =
+ar ? "جاري الدخول..." : "Logging in...";
+
+
+const { error } =
+await supabaseClient.auth.signInWithPassword({
+
+email: email,
+
+password: password
+
+});
+
+
+loginBtn.disabled = false;
+
+loginBtn.textContent =
+ar ? "تسجيل الدخول" : "Login";
+
+
+if(error){
+
+loginMessage.textContent =
+(ar ? "خطأ: " : "Error: ")
++ error.message;
+
+return;
+}
+
+
+await loadDashboard();
+
+};
+
+
+/* إنشاء الحساب */
+
+createAccountBtn.onclick = async function(){
+
+registerMessage.textContent = "";
+
+const email =
+registerEmail.value.trim();
+
+const password =
+registerPassword.value;
+
+const password2 =
+registerPassword2.value;
+
+
+if(!email){
+
+registerMessage.textContent =
+ar
+? "أدخل البريد الإلكتروني"
+: "Enter your email";
+
+return;
+}
+
+
+if(!password){
+
+registerMessage.textContent =
+ar
+? "أدخل كلمة المرور"
+: "Enter your password";
+
+return;
+}
+
+
+if(password.length < 6){
+
+registerMessage.textContent =
+ar
+? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+: "Password must be at least 6 characters";
+
+return;
+}
+
+
+if(password !== password2){
+
+registerMessage.textContent =
+ar
+? "كلمتا المرور غير متطابقتين"
+: "Passwords do not match";
+
+return;
+}
+
+
+createAccountBtn.disabled = true;
+
+createAccountBtn.textContent =
+ar
+? "جاري إنشاء الحساب..."
+: "Creating account...";
+
+
+const { data, error } =
+await supabaseClient.auth.signUp({
+
+email: email,
+
+password: password,
+
+options: {
+emailRedirectTo: M2_SITE_URL
+}
+
+});
+
+
+createAccountBtn.disabled = false;
+
+createAccountBtn.textContent =
+ar
+? "إنشاء الحساب"
+: "Create Account";
+
+
+if(error){
+
+registerMessage.textContent =
+(ar ? "خطأ: " : "Error: ")
++ error.message;
+
+return;
+}
+
+
+/*
+إذا كان تأكيد البريد مفعلاً،
+سيطلب Supabase من المستخدم تأكيد بريده.
+*/
+
+if(data && data.session){
+
+registerMessage.textContent =
+ar
+? "تم إنشاء الحساب بنجاح."
+: "Account created successfully.";
+
+await loadDashboard();
+
+return;
+}
+
+
+registerMessage.textContent =
+ar
+? "تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط تأكيد الحساب، ثم ارجع وسجّل الدخول."
+: "Account created. Open your email, confirm your account, then return and log in.";
+
+};
+
+
+/* تحميل لوحة المستخدم */
 
 async function loadDashboard(){
 
-  loginPage.classList.add("hidden");
-  dashboard.classList.remove("hidden");
+loginPage.classList.add("hidden");
 
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
+registerPage.classList.add("hidden");
 
-  if(!user){
-    return;
-  }
-
-  welcome.textContent =
-    (ar ? "مرحبًا بك، " : "Welcome, ") + user.email;
-
-  tasks.innerHTML =
-    ar ? "جاري تحميل المهام..." : "Loading tasks...";
+dashboard.classList.remove("hidden");
 
 
-  const { data, error } =
-    await supabaseClient
-      .from("tasks")
-      .select("*")
-      .eq("assigned_to", user.id)
-      .order("created_at", {
-        ascending:false
-      });
+const {
+data: { user }
+} =
+await supabaseClient.auth.getUser();
 
 
-  if(error){
+if(!user){
 
-    tasks.innerHTML =
-      (ar ? "حدث خطأ: " : "Error: ")
-      + error.message;
+dashboard.classList.add("hidden");
 
-    return;
-  }
+loginPage.classList.remove("hidden");
 
-
-  if(!data || data.length === 0){
-
-    tasks.innerHTML =
-      ar
-      ? "لا توجد مهام مخصصة لك حاليًا."
-      : "No tasks assigned to you.";
-
-    return;
-  }
+return;
+}
 
 
-  tasks.innerHTML = "";
+welcome.textContent =
+(ar ? "مرحبًا بك، " : "Welcome, ")
++ user.email;
 
 
-  data.forEach(task => {
-
-    const div =
-      document.createElement("div");
-
-    div.className = "task";
+tasks.innerHTML =
+ar
+? "جاري تحميل المهام..."
+: "Loading tasks...";
 
 
-    const h3 =
-      document.createElement("h3");
-
-    h3.textContent =
-      task.title || "";
-
-
-    const description =
-      document.createElement("p");
-
-    description.textContent =
-      task.description || "";
+const { data, error } =
+await supabaseClient
+.from("tasks")
+.select("*")
+.eq("assigned_to", user.id)
+.order("created_at", {
+ascending:false
+});
 
 
-    const reward =
-      document.createElement("p");
+if(error){
 
-    reward.textContent =
-      ar
-      ? "💰 المكافأة: " + task.reward
-      : "💰 Reward: " + task.reward;
+tasks.innerHTML =
+(ar ? "حدث خطأ: " : "Error: ")
++ error.message;
 
-
-    const status =
-      document.createElement("p");
-
-    status.textContent =
-      ar
-      ? "الحالة: " + task.status
-      : "Status: " + task.status;
+return;
+}
 
 
-    div.appendChild(h3);
-    div.appendChild(description);
-    div.appendChild(reward);
-    div.appendChild(status);
+if(!data || data.length === 0){
 
-    tasks.appendChild(div);
+tasks.innerHTML =
+ar
+? "لا توجد مهام مخصصة لك حاليًا."
+: "No tasks assigned to you.";
 
-  });
+return;
+}
+
+
+tasks.innerHTML = "";
+
+
+data.forEach(function(task){
+
+const div =
+document.createElement("div");
+
+div.className = "task";
+
+
+const h3 =
+document.createElement("h3");
+
+h3.textContent =
+task.title || "";
+
+
+const description =
+document.createElement("p");
+
+description.textContent =
+task.description || "";
+
+
+const reward =
+document.createElement("p");
+
+reward.textContent =
+ar
+? "💰 المكافأة: " + task.reward
+: "💰 Reward: " + task.reward;
+
+
+const status =
+document.createElement("p");
+
+status.textContent =
+ar
+? "الحالة: " + task.status
+: "Status: " + task.status;
+
+
+div.appendChild(h3);
+
+div.appendChild(description);
+
+div.appendChild(reward);
+
+div.appendChild(status);
+
+tasks.appendChild(div);
+
+});
 
 }
 
 
-login.onclick = async function(){
-
-  showMessage("");
-
-  const userEmail =
-    email.value.trim();
-
-  const userPassword =
-    password.value;
-
-
-  if(!userEmail || !userPassword){
-
-    showMessage(
-      ar
-      ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-      : "Please enter email and password"
-    );
-
-    return;
-  }
-
-
-  const { error } =
-    await supabaseClient.auth.signInWithPassword({
-
-      email:userEmail,
-
-      password:userPassword
-
-    });
-
-
-  if(error){
-
-    showMessage(
-      (ar ? "خطأ: " : "Error: ")
-      + error.message
-    );
-
-    return;
-  }
-
-
-  await loadDashboard();
-
-};
-
-
-register.onclick = async function(){
-
-  showMessage("");
-
-  const userEmail =
-    email.value.trim();
-
-  const userPassword =
-    password.value;
-
-
-  if(!userEmail || !userPassword){
-
-    showMessage(
-      ar
-      ? "أدخل البريد الإلكتروني وكلمة المرور أولاً"
-      : "Enter email and password first"
-    );
-
-    return;
-  }
-
-
-  if(userPassword.length < 6){
-
-    showMessage(
-      ar
-      ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
-      : "Password must be at least 6 characters"
-    );
-
-    return;
-  }
-
-
-  showMessage(
-    ar
-    ? "جاري إنشاء الحساب..."
-    : "Creating account..."
-  );
-
-
-  const { data, error } =
-    await supabaseClient.auth.signUp({
-
-      email:userEmail,
-
-      password:userPassword,
-
-      options:{
-        emailRedirectTo:M2_SITE_URL
-      }
-
-    });
-
-
-  if(error){
-
-    showMessage(
-      (ar ? "خطأ: " : "Error: ")
-      + error.message
-    );
-
-    return;
-  }
-
-
-  if(data && data.session){
-
-    showMessage(
-      ar
-      ? "تم إنشاء الحساب وتسجيل الدخول."
-      : "Account created and signed in."
-    );
-
-    await loadDashboard();
-
-    return;
-  }
-
-
-  showMessage(
-    ar
-    ? "تم إنشاء الحساب. افتح بريدك الإلكتروني واضغط رابط تأكيد الحساب، ثم ارجع إلى موقع M2 وسجّل الدخول."
-    : "Account created. Open your email, confirm your account, then return to M2 and log in."
-  );
-
-};
-
-
-lang.onclick = function(){
-
-  ar = !ar;
-
-
-  document.documentElement.lang =
-    ar ? "ar" : "en";
-
-
-  document.documentElement.dir =
-    ar ? "rtl" : "ltr";
-
-
-  lang.textContent =
-    ar ? "English" : "العربية";
-
-
-  title.textContent =
-    ar
-    ? "منصة M2 للعمل"
-    : "M2 Work Platform";
-
-
-  desc.textContent =
-    ar
-    ? "منصة للعمل وإدارة الحساب والطلبات"
-    : "Platform for work, account and requests";
-
-
-  email.placeholder =
-    ar
-    ? "البريد الإلكتروني"
-    : "Email";
-
-
-  password.placeholder =
-    ar
-    ? "كلمة المرور"
-    : "Password";
-
-
-  login.textContent =
-    ar
-    ? "تسجيل الدخول"
-    : "Login";
-
-
-  register.textContent =
-    ar
-    ? "ليس لديك حساب؟ إنشاء حساب"
-    : "Don't have an account? Register";
-
-
-  dashboardTitle.textContent =
-    ar
-    ? "لوحة المستخدم"
-    : "User Dashboard";
-
-
-  tasksTitle.textContent =
-    ar
-    ? "📋 مهامي"
-    : "📋 My Tasks";
-
-
-  logout.textContent =
-    ar
-    ? "تسجيل الخروج"
-    : "Logout";
-
-};
-
+/* تسجيل الخروج */
 
 logout.onclick = async function(){
 
-  await supabaseClient.auth.signOut();
+await supabaseClient.auth.signOut();
 
-  dashboard.classList.add("hidden");
+dashboard.classList.add("hidden");
 
-  loginPage.classList.remove("hidden");
+loginPage.classList.remove("hidden");
 
-  email.value = "";
+loginEmail.value = "";
 
-  password.value = "";
-
-  showMessage("");
+loginPassword.value = "";
 
 };
 
 
+/* زر اللغة */
+
+lang.onclick = function(){
+
+ar = !ar;
+
+
+document.documentElement.lang =
+ar ? "ar" : "en";
+
+document.documentElement.dir =
+ar ? "rtl" : "ltr";
+
+
+lang.textContent =
+ar ? "English" : "العربية";
+
+
+loginTitle.textContent =
+ar
+? "منصة M2 للعمل"
+: "M2 Work Platform";
+
+
+loginDesc.textContent =
+ar
+? "منصة للعمل وإدارة الحساب والطلبات"
+: "Platform for work, account and requests";
+
+
+loginEmail.placeholder =
+ar
+? "البريد الإلكتروني"
+: "Email";
+
+
+loginPassword.placeholder =
+ar
+? "كلمة المرور"
+: "Password";
+
+
+loginBtn.textContent =
+ar
+? "تسجيل الدخول"
+: "Login";
+
+
+openRegister.textContent =
+ar
+? "إنشاء حساب جديد"
+: "Create New Account";
+
+
+registerTitle.textContent =
+ar
+? "إنشاء حساب جديد"
+: "Create New Account";
+
+
+registerDesc.textContent =
+ar
+? "أنشئ حسابك في منصة M2"
+: "Create your M2 account";
+
+
+registerEmail.placeholder =
+ar
+? "البريد الإلكتروني"
+: "Email";
+
+
+registerPassword.placeholder =
+ar
+? "كلمة المرور"
+: "Password";
+
+
+registerPassword2.placeholder =
+ar
+? "تأكيد كلمة المرور"
+: "Confirm Password";
+
+
+createAccountBtn.textContent =
+ar
+? "إنشاء الحساب"
+: "Create Account";
+
+
+backLogin.textContent =
+ar
+? "العودة لتسجيل الدخول"
+: "Back to Login";
+
+
+logout.textContent =
+ar
+? "تسجيل الخروج"
+: "Logout";
+
+};
+
+
+/* مراقبة تسجيل الدخول */
+
 supabaseClient.auth.onAuthStateChange(
-  async function(event, session){
+async function(event, session){
+if(session){
 
-    if(session){
+  await loadDashboard();
 
-      await loadDashboard();
+}
 
-    }
+});
 
-  }
-);
 
+/* فحص الجلسة عند فتح الموقع */
 
 (async function(){
 
   const {
     data: { session }
-  } =
-    await supabaseClient.auth.getSession();
+  } = await supabaseClient.auth.getSession();
 
 
   if(session){
