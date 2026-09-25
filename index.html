@@ -5,8 +5,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>M2 Work Platform</title>
-<style>
 
+<style>
 *{
 box-sizing:border-box;
 }
@@ -21,7 +21,9 @@ color:white;
 display:flex;
 justify-content:center;
 align-items:center;
-}.box{
+}
+
+.box{
 width:100%;
 max-width:420px;
 background:#1f2937;
@@ -43,7 +45,8 @@ justify-content:center;
 font-size:30px;
 font-weight:bold;
 }
-  h1{
+
+h1{
 margin:18px 0 8px;
 }
 
@@ -64,7 +67,9 @@ font-size:16px;
 input{
 background:white;
 color:#111827;
-}button{
+}
+
+button{
 background:#2563eb;
 color:white;
 font-weight:bold;
@@ -86,10 +91,10 @@ margin-top:12px;
 font-size:14px;
 color:#fbbf24;
 }
-
 </style>
 </head>
-  <body>
+
+<body>
 
 <div class="box">
 
@@ -100,7 +105,8 @@ English
 <div class="logo">
 M2
 </div>
-  <h1 id="title">
+
+<h1 id="title">
 منصة M2 للعمل
 </h1>
 
@@ -112,7 +118,9 @@ M2
 id="email"
 type="email"
 placeholder="البريد الإلكتروني"
-><input
+>
+
+<input
 id="password"
 type="password"
 placeholder="كلمة المرور"
@@ -129,6 +137,7 @@ placeholder="كلمة المرور"
 <div class="message" id="message"></div>
 
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -145,24 +154,9 @@ SUPABASE_URL,
 SUPABASE_PUBLISHABLE_KEY
 );
 
-let ar = true;<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-<script>
-
-const SUPABASE_URL =
-"https://scjyudgdvlfzeewbnmyt.supabase.co";
-
-const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_yEWBEwKdcm1FtKWziyPZ2A_uE4NvV3J";
-
-const supabaseClient =
-supabase.createClient(
-SUPABASE_URL,
-SUPABASE_PUBLISHABLE_KEY
-);
-
 let ar = true;
-  const lang =
+
+const lang =
 document.getElementById("lang");
 
 const title =
@@ -188,7 +182,9 @@ document.getElementById("message");
 
 function showMessage(text){
 message.textContent = text;
-}lang.onclick = function(){
+}
+
+lang.onclick = function(){
 
 ar = !ar;
 
@@ -222,7 +218,9 @@ ar ? "ليس لديك حساب؟ إنشاء حساب"
 : "Don't have an account? Register";
 
 showMessage("");
-};login.onclick = async function(){
+};
+
+login.onclick = async function(){
 
 showMessage("");
 
@@ -256,7 +254,6 @@ ar ? "تم تسجيل الدخول بنجاح"
 );
 
 };
-
 
 register.onclick = async function(){
 
@@ -295,7 +292,8 @@ return;
 }
 
 showMessage(
-ar ? "تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طلب Supabase ذلك."
+ar
+? "تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طلب Supabase ذلك."
 : "Account created. Check your email if Supabase asks you to."
 );
 
