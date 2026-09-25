@@ -91,24 +91,39 @@ margin-top:12px;
 font-size:14px;
 color:#fbbf24;
 }
+
+.hidden{
+display:none;
+}
+
+.task{
+background:#374151;
+padding:15px;
+margin-top:12px;
+border-radius:12px;
+text-align:right;
+}
+
+.task h3{
+margin-top:0;
+}
+
+.logout{
+background:#dc2626;
+margin-top:20px;
+}
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="box" id="loginPage">
 
-<button class="lang" id="lang">
-English
-</button>
+<button class="lang" id="lang">English</button>
 
-<div class="logo">
-M2
-</div>
+<div class="logo">M2</div>
 
-<h1 id="title">
-منصة M2 للعمل
-</h1>
+<h1 id="title">منصة M2 للعمل</h1>
 
 <p id="desc">
 منصة للعمل وإدارة الحساب والطلبات
@@ -126,9 +141,7 @@ type="password"
 placeholder="كلمة المرور"
 >
 
-<button id="login">
-تسجيل الدخول
-</button>
+<button id="login">تسجيل الدخول</button>
 
 <div class="register" id="register">
 ليس لديك حساب؟ إنشاء حساب
@@ -137,6 +150,28 @@ placeholder="كلمة المرور"
 <div class="message" id="message"></div>
 
 </div>
+
+
+<div class="box hidden" id="dashboard">
+
+<div class="logo">M2</div>
+
+<h1>لوحة المستخدم</h1>
+
+<p id="welcome"></p>
+
+<h2>📋 مهامي</h2>
+
+<div id="tasks">
+جاري تحميل المهام...
+</div>
+
+<button class="logout" id="logout">
+تسجيل الخروج
+</button>
+
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -154,7 +189,15 @@ SUPABASE_URL,
 SUPABASE_PUBLISHABLE_KEY
 );
 
+
 let ar = true;
+
+
+const loginPage =
+document.getElementById("loginPage");
+
+const dashboard =
+document.getElementById("dashboard");
 
 const lang =
 document.getElementById("lang");
@@ -180,9 +223,189 @@ document.getElementById("register");
 const message =
 document.getElementById("message");
 
+const welcome =
+document.getElementById("welcome");
+
+const tasks =
+document.getElementById("tasks");
+
+const logout =
+document.getElementById("logout");
+
+
 function showMessage(text){
 message.textContent = text;
 }
+
+
+async function loadDashboard(){
+
+loginPage.classList.add("hidden");
+dashboard.classList.remove("hidden");
+
+const {
+data: { user }
+} = await supabaseClient.auth.getUser();
+
+if(!user){
+return;
+}
+
+welcome.textContent =
+"مرحبًا بك، " + user.email;
+
+const { data, error } =
+await supabaseClient
+.from("tasks")
+.select("*")
+.eq("assigned_to", user.id)
+.order("created_at", { ascending:false });
+
+if(error){
+
+tasks.innerHTML =
+"حدث خطأ في تحميل المهام: " + error.message;
+
+return;
+}
+
+if(!data || data.length === 0){
+
+tasks.innerHTML =
+"لا توجد مهام مخصصة لك حاليًا.";
+
+return;
+}
+
+tasks.innerHTML = "";
+
+data.forEach(task => {
+
+const div =
+document.createElement("div");
+
+div.className = "task";
+
+div.innerHTML = `
+<h3>${task.title}</h3>
+<p>${task.description || ""}</p>
+<p>💰 المكافأة: ${task.reward}</p>
+<p>الحالة: ${task.status}</p>
+`;
+
+tasks.appendChild(div);
+
+});
+
+}
+
+
+login.onclick = async function(){
+
+showMessage("");
+
+const userEmail =
+email.value.trim();
+
+const userPassword =
+password.value;
+
+if(!userEmail || !userPassword){
+
+showMessage(
+ar
+? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
+: "Please enter email and password"
+);
+
+return;
+}
+
+const { error } =
+await supabaseClient.auth.signInWithPassword({
+
+email:userEmail,
+
+password:userPassword
+
+});
+
+
+if(error){
+
+showMessage(
+(ar ? "خطأ: " : "Error: ")
++ error.message
+);
+
+return;
+}
+
+await loadDashboard();
+
+};
+
+
+register.onclick = async function(){
+
+showMessage("");
+
+const userEmail =
+email.value.trim();
+
+const userPassword =
+password.value;
+
+if(!userEmail || !userPassword){
+
+showMessage(
+ar
+? "أدخل البريد الإلكتروني وكلمة المرور أولاً"
+: "Enter email and password first"
+);
+
+return;
+}
+
+if(userPassword.length < 6){
+
+showMessage(
+ar
+? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+: "Password must be at least 6 characters"
+);
+
+return;
+}
+
+const { error } =
+await supabaseClient.auth.signUp({
+
+email:userEmail,
+
+password:userPassword
+
+});
+
+
+if(error){
+
+showMessage(
+(ar ? "خطأ: " : "Error: ")
++ error.message
+);
+
+return;
+}
+
+showMessage(
+ar
+? "تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طلب Supabase ذلك."
+: "Account created. Check your email if Supabase asks you to."
+);
+
+};
+
 
 lang.onclick = function(){
 
@@ -198,106 +421,66 @@ lang.textContent =
 ar ? "English" : "العربية";
 
 title.textContent =
-ar ? "منصة M2 للعمل" : "M2 Work Platform";
+ar
+? "منصة M2 للعمل"
+: "M2 Work Platform";
 
 desc.textContent =
-ar ? "منصة للعمل وإدارة الحساب والطلبات"
+ar
+? "منصة للعمل وإدارة الحساب والطلبات"
 : "Platform for work, account and requests";
 
 email.placeholder =
-ar ? "البريد الإلكتروني" : "Email";
+ar
+? "البريد الإلكتروني"
+: "Email";
 
 password.placeholder =
-ar ? "كلمة المرور" : "Password";
+ar
+? "كلمة المرور"
+: "Password";
 
 login.textContent =
-ar ? "تسجيل الدخول" : "Login";
+ar
+? "تسجيل الدخول"
+: "Login";
 
 register.textContent =
-ar ? "ليس لديك حساب؟ إنشاء حساب"
+ar
+? "ليس لديك حساب؟ إنشاء حساب"
 : "Don't have an account? Register";
 
-showMessage("");
 };
 
-login.onclick = async function(){
 
-showMessage("");
+logout.onclick = async function(){
 
-const userEmail = email.value.trim();
-const userPassword = password.value;
+await supabaseClient.auth.signOut();
 
-if(!userEmail || !userPassword){
-showMessage(
-ar ? "يرجى إدخال البريد الإلكتروني وكلمة المرور"
-: "Please enter email and password"
-);
-return;
-}
+dashboard.classList.add("hidden");
+loginPage.classList.remove("hidden");
 
-const { error } =
-await supabaseClient.auth.signInWithPassword({
-email:userEmail,
-password:userPassword
-});
-
-if(error){
-showMessage(
-(ar ? "خطأ: " : "Error: ") + error.message
-);
-return;
-}
-
-showMessage(
-ar ? "تم تسجيل الدخول بنجاح"
-: "Login successful"
-);
-
-};
-
-register.onclick = async function(){
+email.value = "";
+password.value = "";
 
 showMessage("");
 
-const userEmail = email.value.trim();
-const userPassword = password.value;
-
-if(!userEmail || !userPassword){
-showMessage(
-ar ? "أدخل البريد الإلكتروني وكلمة المرور أولاً"
-: "Enter email and password first"
-);
-return;
-}
-
-if(userPassword.length < 6){
-showMessage(
-ar ? "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
-: "Password must be at least 6 characters"
-);
-return;
-}
-
-const { error } =
-await supabaseClient.auth.signUp({
-email:userEmail,
-password:userPassword
-});
-
-if(error){
-showMessage(
-(ar ? "خطأ: " : "Error: ") + error.message
-);
-return;
-}
-
-showMessage(
-ar
-? "تم إنشاء الحساب. تحقق من بريدك الإلكتروني إذا طلب Supabase ذلك."
-: "Account created. Check your email if Supabase asks you to."
-);
-
 };
+
+
+(async function(){
+
+const {
+data: { session }
+} = await supabaseClient.auth.getSession();
+
+if(session){
+
+await loadDashboard();
+
+}
+
+})();
 
 </script>
 
